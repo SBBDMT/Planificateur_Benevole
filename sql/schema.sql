@@ -15,19 +15,42 @@ CREATE DATABASE planificateur_benevoles
 USE planificateur_benevoles;
 
 -- ============================================================
---  TABLE : user
---  Compte applicatif : coordinateur, bénévole, responsable, admin
+--  TABLE : role
+--  Rôles applicatifs disponibles
 -- ============================================================
-CREATE TABLE user (
-    id         INT UNSIGNED    NOT NULL AUTO_INCREMENT,
-    name       VARCHAR(100)    NOT NULL,
-    email      VARCHAR(150)    NOT NULL UNIQUE,
-    password   VARCHAR(255)    NOT NULL,                          -- hash bcrypt
-    role       ENUM('coordinator', 'volunteer', 'manager', 'admin')
-                               NOT NULL DEFAULT 'volunteer',
-    created_at DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP,
+CREATE TABLE role (
+    id    INT UNSIGNED  NOT NULL AUTO_INCREMENT,
+    name  VARCHAR(50)   NOT NULL UNIQUE,                          -- ex. 'volunteer'
+    label VARCHAR(100)  NOT NULL,                                 -- ex. 'Bénévole'
 
     PRIMARY KEY (id)
+) ENGINE=InnoDB;
+
+-- Insertion des rôles par défaut
+INSERT INTO role (name, label) VALUES
+    ('volunteer',   'Bénévole'),
+    ('coordinator', 'Coordinateur'),
+    ('manager',     'Responsable'),
+    ('admin',       'Administrateur');
+
+-- ============================================================
+--  TABLE : user
+--  Compte applicatif lié à un rôle
+-- ============================================================
+CREATE TABLE user (
+    id         INT UNSIGNED  NOT NULL AUTO_INCREMENT,
+    name       VARCHAR(100)  NOT NULL,
+    email      VARCHAR(150)  NOT NULL UNIQUE,
+    password   VARCHAR(255)  NOT NULL,                            -- hash bcrypt
+    role_id    INT UNSIGNED  NOT NULL DEFAULT 1,                  -- FK → role (défaut : volunteer)
+    created_at DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    PRIMARY KEY (id),
+
+    CONSTRAINT fk_user_role
+        FOREIGN KEY (role_id) REFERENCES role(id)
+        ON DELETE RESTRICT
+        ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 -- ============================================================
@@ -35,11 +58,12 @@ CREATE TABLE user (
 --  Zone du festival sous la responsabilité d'un responsable
 -- ============================================================
 CREATE TABLE zone (
-    id             INT UNSIGNED    NOT NULL AUTO_INCREMENT,
-    name           VARCHAR(100)    NOT NULL,
-    responsible_id INT UNSIGNED    NULL,                          -- FK → user (manager)
+    id             INT UNSIGNED  NOT NULL AUTO_INCREMENT,
+    name           VARCHAR(100)  NOT NULL,
+    responsible_id INT UNSIGNED  NULL,                            -- FK → user (manager)
 
     PRIMARY KEY (id),
+
     CONSTRAINT fk_zone_responsible
         FOREIGN KEY (responsible_id) REFERENCES user(id)
         ON DELETE SET NULL
@@ -68,6 +92,7 @@ CREATE TABLE volunteer (
     active  TINYINT(1)    NOT NULL DEFAULT 1,
 
     PRIMARY KEY (id),
+
     CONSTRAINT fk_volunteer_user
         FOREIGN KEY (user_id) REFERENCES user(id)
         ON DELETE CASCADE
@@ -83,10 +108,12 @@ CREATE TABLE volunteer_skill (
     skill_id     INT UNSIGNED NOT NULL,
 
     PRIMARY KEY (volunteer_id, skill_id),
+
     CONSTRAINT fk_vs_volunteer
         FOREIGN KEY (volunteer_id) REFERENCES volunteer(id)
         ON DELETE CASCADE
         ON UPDATE CASCADE,
+
     CONSTRAINT fk_vs_skill
         FOREIGN KEY (skill_id) REFERENCES skill(id)
         ON DELETE CASCADE
@@ -103,6 +130,7 @@ CREATE TABLE mission (
     description       TEXT          NULL,
     location          VARCHAR(150)  NOT NULL,
     zone_id           INT UNSIGNED  NULL,
+    coordinator_id    INT UNSIGNED  NOT NULL,                     -- FK → user (coordinateur créateur)
     starts_at         DATETIME      NOT NULL,
     ends_at           DATETIME      NOT NULL,
     required_capacity INT UNSIGNED  NOT NULL DEFAULT 1,
@@ -119,6 +147,11 @@ CREATE TABLE mission (
     CONSTRAINT fk_mission_zone
         FOREIGN KEY (zone_id) REFERENCES zone(id)
         ON DELETE SET NULL
+        ON UPDATE CASCADE,
+
+    CONSTRAINT fk_mission_coordinator
+        FOREIGN KEY (coordinator_id) REFERENCES user(id)
+        ON DELETE RESTRICT
         ON UPDATE CASCADE,
 
     CONSTRAINT fk_mission_skill
@@ -208,21 +241,24 @@ CREATE TABLE audit_log (
 -- ============================================================
 
 -- Recherche des disponibilités d'un bénévole sur un créneau
-CREATE INDEX idx_availability_volunteer   ON availability (volunteer_id, starts_at, ends_at);
+CREATE INDEX idx_availability_volunteer ON availability (volunteer_id, starts_at, ends_at);
 
 -- Recherche des affectations d'une mission
-CREATE INDEX idx_assignment_mission       ON assignment (mission_id, status);
+CREATE INDEX idx_assignment_mission     ON assignment (mission_id, status);
 
 -- Recherche des affectations d'un bénévole
-CREATE INDEX idx_assignment_volunteer     ON assignment (volunteer_id, status);
+CREATE INDEX idx_assignment_volunteer   ON assignment (volunteer_id, status);
+
+-- Recherche des missions par coordinateur
+CREATE INDEX idx_mission_coordinator    ON mission (coordinator_id, status);
 
 -- Recherche des missions par zone et statut
-CREATE INDEX idx_mission_zone_status      ON mission (zone_id, status);
+CREATE INDEX idx_mission_zone_status    ON mission (zone_id, status);
 
 -- Recherche des missions par créneau horaire
-CREATE INDEX idx_mission_dates            ON mission (starts_at, ends_at);
+CREATE INDEX idx_mission_dates          ON mission (starts_at, ends_at);
 
 -- Audit log par entité
-CREATE INDEX idx_audit_entity             ON audit_log (entity_type, entity_id);
+CREATE INDEX idx_audit_entity           ON audit_log (entity_type, entity_id);
 
 SET FOREIGN_KEY_CHECKS = 1;
