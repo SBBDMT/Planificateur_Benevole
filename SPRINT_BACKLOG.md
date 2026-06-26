@@ -30,15 +30,9 @@
 | 11 | US3-D | Tracer affectation et désaffectation | Journal visible ou exploitable dans les logs | 2 | US3-A | Sophian | ✅ | |
 | 12 | US4-A | Afficher le planning d'un bénévole | Missions triées chronologiquement | 2 | US3-A | Jonathan | ✅ | |
 | 13 | US4-B | Afficher le planning par mission | Liste des bénévoles affectés visible | 2 | US3-A | Jonathan | ✅ | |
-<<<<<<< HEAD
 | 14 | US5-A | Calculer la couverture d'une mission | Nombre affecté / capacité affiché | 2 | US3-A | Aurélien | ✅ | |
 | 15 | US5-B | Identifier les missions sous-dotées | Missions incomplètes mises en évidence | 3 | US5-A | Jonathan | ✅ | |
 | 16 | US5-C | Filtrer les missions sous-dotées | Filtre opérationnel par zone ou statut | 2 | US5-B | Jonathan | ✅ | |
-=======
-| 14 | US5-A | Calculer la couverture d'une mission | Nombre affecté / capacité affiché | 2 | US3-A | Aurélien | ✅ | |
-| 15 | US5-B | Identifier les missions sous-dotées | Missions incomplètes mises en évidence | 3 | US5-A | Jonathan | ⬜ | |
-| 16 | US5-C | Filtrer les missions sous-dotées | Filtre opérationnel par zone ou statut | 2 | US5-B | Jonathan | ⬜ | |
->>>>>>> 6c9f13e0aa69366dfb4e7004c006b0d2ab6fcb8d
 | 17 | T2 | Jeu de données de démonstration | Au moins 8 bénévoles et 6 missions | 2 | T1 | Sophian | ✅ | |
 | 18 | T3 | Tests essentiels | Tests affectation, conflit, capacité, disponibilité | 3 | US3, US5 | Tous | ⬜ | |
 | 19 | T4 | Documentation d'exploitation | README, lancement, limites connues, comptes fictifs | 2 | T0 | Sophian | ⬜ | |
