@@ -137,7 +137,7 @@ require_once __DIR__ . '/../includes/header.php';
     <section class="dashboard-section">
         <div class="section-header">
             <h2>Missions sous-dotées</h2>
-            <a href="toutes_missions.php" class="btn btn-sm">Voir toutes les missions</a>
+            <a href="missions_sous_dotees.php" class="btn btn-sm">Filtrer les sous-dotées</a>
         </div>
 
         <?php if (empty($understaffedMissions)) : ?>

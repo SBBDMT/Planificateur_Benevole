@@ -43,7 +43,10 @@ require_once __DIR__ . '/../includes/header.php';
 
     <div class="page-header">
         <h1>Mes missions</h1>
-        <a href="creer_mission.php" class="btn btn-primary">+ Créer une mission</a>
+        <div style="display:flex;gap:10px">
+            <a href="missions_sous_dotees.php" class="btn btn-secondary">Missions sous-dotées</a>
+            <a href="creer_mission.php" class="btn btn-primary">+ Créer une mission</a>
+        </div>
     </div>
 
     <?php if ($success) : ?>
