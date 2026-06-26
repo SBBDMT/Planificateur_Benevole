@@ -2,153 +2,197 @@
 
 **Sprint Goal :** Livrer en 15 heures un incrément utilisable permettant de créer des missions, déclarer les disponibilités, affecter sans conflit et afficher les besoins non couverts.
 
-**Équipe :** Membre 1 (Dev backend) · Membre 2 (Dev frontend) · Membre 3 (DevOps / Scrum Master)
-**Durée totale :** 15H · **Date de début :** ___/___/2025 · **Date de fin :** ___/___/2025
+**Équipe :**
+- 👤 Aurélien — Dev backend / métier
+- 👤 Jonathan — Dev frontend / parcours utilisateur
+- 👤 Sophian — DevOps / QA / Scrum Master tournant
+
+**Durée totale :** 15H · **Date début :** ___/___/_____ · **Date fin :** ___/___/_____
+
+**Légende statut :** ⬜ À faire · 🔄 En cours · ✅ Terminé · ❌ Bloqué
 
 ---
 
-## 🔴 Phase 1 — Setup & fondations (H0 → H2h30)
+## 5.1 MVP — Socle métier
 
-| ID | Tâche | Responsable | Estimation | Statut | Notes |
-|----|-------|-------------|------------|--------|-------|
-| T0-1 | Créer le dépôt GitHub + conventions de nommage | Membre 3 | 20 min | ⬜ À faire | Branches : `main`, `develop`, `feat/xxx` |
-| T0-2 | Configurer `.gitignore` + `.env.example` | Membre 3 | 10 min | ⬜ À faire | Ne jamais commit `.env` réel |
-| T0-3 | Créer la structure Django (`django-admin startproject`) | Membre 1 | 15 min | ⬜ À faire | App : `festival/` |
-| T0-4 | Mettre en place `requirements.txt` + `venv` | Membre 1 | 10 min | ⬜ À faire | Django, pytest-django, flake8 |
-| T0-5 | Créer `docker-compose.yml` (app + db) | Membre 3 | 30 min | ⬜ À faire | SQLite en dev suffit |
-| T0-6 | Créer pipeline CI GitHub Actions (lint + tests) | Membre 3 | 30 min | ⬜ À faire | `.github/workflows/ci.yml` |
-| T0-7 | Créer GitHub Project (kanban) + colonnes | Membre 3 | 10 min | ⬜ À faire | À faire / En cours / Terminé |
-| T1-1 | Modéliser et coder `models.py` (8 tables) | Membre 1 | 1h | ⬜ À faire | USER, VOLUNTEER, MISSION, AVAILABILITY, ASSIGNMENT, SKILL, ZONE, AUDIT_LOG |
-| T1-2 | Générer et appliquer les migrations | Membre 1 | 15 min | ⬜ À faire | `makemigrations` + `migrate` |
-| T1-3 | Configurer `admin.py` pour toutes les entités | Membre 1 | 20 min | ⬜ À faire | Permet de vérifier les données visuellement |
-| CON-1 | Maquettes rapides des écrans principaux | Membre 2 | 30 min | ⬜ À faire | Papier ou Figma, 3 écrans max |
-
----
-
-## 🟠 Phase 2 — Construction verticale 1 (H2h30 → H5h30)
-
-| ID | Tâche | Responsable | Estimation | Statut | Notes |
-|----|-------|-------------|------------|--------|-------|
-| US1-A | Vue : créer une mission (titre, lieu, horaire, capacité) | Membre 1 + 2 | 1h | ⬜ À faire | Form Django + vue + template |
-| US1-B | Validation : compétence facultative sur une mission | Membre 1 | 30 min | ⬜ À faire | Champ optionnel `required_skill` |
-| US2-A | Vue : créer un bénévole (nom, contact, profil) | Membre 1 | 30 min | ⬜ À faire | Lié à USER |
-| US2-B | Vue : renseigner les disponibilités d'un bénévole | Membre 2 | 1h | ⬜ À faire | Formulaire créneaux horaires |
-| US2-C | Validation : empêcher disponibilités incohérentes | Membre 1 | 30 min | ⬜ À faire | fin > début, pas de chevauchement |
-| T2-1 | Créer le jeu de données de démo (fixtures Django) | Membre 3 | 1h | ⬜ À faire | 8+ bénévoles, 6+ missions, dispos |
+| # | ID | Story | Critères d'acceptation | Pts | Dépend. | Responsable | Statut | Notes |
+|---|-----|-------|------------------------|-----|---------|-------------|--------|-------|
+| 1 | T0 | Initialiser dépôt, conventions, CI minimale | Repo créé, pipeline lancé, structure projet disponible | 2 | — | Sophian | ⬜ | |
+| 2 | T1 | Créer le modèle de données minimal | Tables missions, bénévoles, disponibilités, affectations créées | 3 | T0 | Aurélien | ✅ | `schema.sql` généré |
+| 3 | US1-A | Créer une mission simple | Titre, lieu, début, fin, capacité enregistrés | 2 | T1 | Aurélien | ⬜ | |
+| 4 | US1-B | Ajouter compétence éventuelle à une mission | Compétence facultative enregistrée et validée | 1 | US1-A | Aurélien | ⬜ | |
+| 5 | US2-A | Créer un bénévole | Nom, contact et profil créés | 1 | T1 | Aurélien | ⬜ | |
+| 6 | US2-B | Renseigner les disponibilités | Créneaux enregistrés pour un bénévole | 2 | US2-A | Jonathan | ⬜ | |
+| 7 | US2-C | Empêcher les disponibilités incohérentes | Fin > début ; chevauchements détectés | 2 | US2-B | Aurélien | ⬜ | |
+| 8 | US3-A | Affecter un bénévole à une mission | Affectation créée si disponibilité suffisante | 3 | US1, US2 | Aurélien | ⬜ | |
+| 9 | US3-B | Refuser une affectation en conflit | Conflit horaire détecté et message clair affiché | 3 | US3-A | Aurélien | ⬜ | |
+| 10 | US3-C | Refuser si capacité dépassée | Mission pleine : affectation impossible | 2 | US3-A | Aurélien | ⬜ | |
+| 11 | US3-D | Tracer affectation et désaffectation | Journal visible ou exploitable dans les logs | 2 | US3-A | Sophian | ⬜ | |
+| 12 | US4-A | Afficher le planning d'un bénévole | Missions triées chronologiquement | 2 | US3-A | Jonathan | ⬜ | |
+| 13 | US4-B | Afficher le planning par mission | Liste des bénévoles affectés visible | 2 | US3-A | Jonathan | ⬜ | |
+| 14 | US5-A | Calculer la couverture d'une mission | Nombre affecté / capacité affiché | 2 | US3-A | Aurélien | ⬜ | |
+| 15 | US5-B | Identifier les missions sous-dotées | Missions incomplètes mises en évidence | 3 | US5-A | Jonathan | ⬜ | |
+| 16 | US5-C | Filtrer les missions sous-dotées | Filtre opérationnel par zone ou statut | 2 | US5-B | Jonathan | ⬜ | |
+| 17 | T2 | Jeu de données de démonstration | Au moins 8 bénévoles et 6 missions | 2 | T1 | Sophian | ⬜ | |
+| 18 | T3 | Tests essentiels | Tests affectation, conflit, capacité, disponibilité | 3 | US3, US5 | Tous | ⬜ | |
+| 19 | T4 | Documentation d'exploitation | README, lancement, limites connues, comptes fictifs | 2 | T0 | Sophian | ⬜ | |
+| 20 | T5 | Sauvegarde et restauration | Procédure testée avant revue | 2 | T1 | Sophian | ⬜ | |
 
 ---
 
-## 🟡 Daily Scrum #1 (H5h30 → H5h45)
+## 5.2 Extensions — Après MVP accepté
 
-> **Durée max : 15 min** — Voir DAILY_LOG.md pour les réponses
-
-| Question | M1 | M2 | M3 |
-|----------|----|----|----|
-| Qu'est-ce que j'ai fait ? | | | |
-| Qu'est-ce que je fais ? | | | |
-| Blocages ? | | | |
-
----
-
-## 🟠 Phase 3 — Construction verticale 2 (H5h45 → H8h45)
-
-| ID | Tâche | Responsable | Estimation | Statut | Notes |
-|----|-------|-------------|------------|--------|-------|
-| US3-A | Logique : affecter un bénévole à une mission | Membre 1 | 1h | ⬜ À faire | Vérif disponibilité + capacité |
-| US3-B | Logique : refuser si conflit horaire | Membre 1 | 45 min | ⬜ À faire | Message d'erreur clair |
-| US3-C | Logique : refuser si capacité dépassée | Membre 1 | 30 min | ⬜ À faire | `required_capacity` atteinte |
-| US3-D | Traçabilité : logger affectation/désaffectation | Membre 3 | 30 min | ⬜ À faire | Table AUDIT_LOG |
-| US4-A | Vue : planning personnel d'un bénévole | Membre 2 | 1h | ⬜ À faire | Trié chronologiquement |
-| US4-B | Vue : planning par mission (liste bénévoles affectés) | Membre 2 | 45 min | ⬜ À faire | |
-| T3-1 | Tests : affectation valide | Membre 3 | 30 min | ⬜ À faire | pytest |
-| T3-2 | Tests : conflit horaire détecté | Membre 3 | 20 min | ⬜ À faire | pytest |
-| T3-3 | Tests : capacité dépassée bloquée | Membre 3 | 20 min | ⬜ À faire | pytest |
+| # | ID | Story | Critères d'acceptation | Pts | Dépend. | Responsable | Statut |
+|---|-----|-------|------------------------|-----|---------|-------------|--------|
+| 21 | EXT1 | Suggestion automatique d'affectation | Proposition non obligatoire, validée manuellement | 5 | MVP | Option | ⬜ |
+| 22 | EXT2 | Export CSV/PDF | Export lisible du planning | 3 | US4, US5 | Option | ⬜ |
+| 23 | EXT3 | Badge ou feuille de présence | Présence simulée enregistrée | 3 | US3 | Option | ⬜ |
+| 24 | EXT4 | Notification simulée | Changement visible ou message simulé | 2 | US3 | Option | ⬜ |
 
 ---
 
-## 🔵 Revue intermédiaire PO (H8h45 → H9h15)
+## 📅 Suivi par phase
 
-> **Durée : 30 min** — Le PO peut poser ces questions :
+### Phase 1 — Setup & conception (H0 → H2h30)
+> Responsable principal : Sophian + Aurélien (schéma BDD)
 
+- [ ] T0 — Repo GitHub + CI + structure projet *(Sophian)*
+- [x] T1 — Modèle de données `schema.sql` *(Aurélien)*
+
+---
+
+### Phase 2 — Construction verticale 1 (H2h30 → H5h30)
+> Missions + bénévoles + disponibilités
+
+- [ ] US1-A — Créer une mission simple *(Aurélien)*
+- [ ] US1-B — Compétence facultative sur mission *(Aurélien)*
+- [ ] US2-A — Créer un bénévole *(Aurélien)*
+- [ ] US2-B — Renseigner les disponibilités *(Jonathan)*
+- [ ] US2-C — Empêcher disponibilités incohérentes *(Aurélien)*
+- [ ] T2 — Jeu de données démo *(Sophian)*
+
+---
+
+### 🕐 Daily Scrum #1 (H5h30 → H5h45)
+
+| | Aurélien | Jonathan | Sophian |
+|--|----------|----------|----------|
+| ✅ Fait | | | |
+| 🔜 Prévu | | | |
+| ❗ Blocage | | | |
+
+**Adaptation :** *(à remplir)*
+
+---
+
+### Phase 3 — Construction verticale 2 (H5h45 → H8h45)
+> Affectation contrôlée + règles métier
+
+- [ ] US3-A — Affecter un bénévole à une mission *(Aurélien)*
+- [ ] US3-B — Refuser si conflit horaire *(Aurélien)*
+- [ ] US3-C — Refuser si capacité dépassée *(Aurélien)*
+- [ ] US3-D — Tracer affectation/désaffectation *(Sophian)*
+- [ ] US4-A — Planning d'un bénévole *(Jonathan)*
+- [ ] US4-B — Planning par mission *(Jonathan)*
+
+---
+
+### 🔵 Revue intermédiaire PO (H8h45 → H9h15)
+
+**Questions PO à préparer :**
 - [ ] Quel utilisateur bénéficie réellement de la prochaine story ?
 - [ ] Quelle preuve permettra d'accepter cette story ?
 - [ ] Que retirez-vous du périmètre pour protéger le Sprint Goal ?
 - [ ] Quel risque doit être testé avant d'ajouter une fonctionnalité ?
 - [ ] Quel élément est réellement Done maintenant ?
 
-**Décisions prises :** _(à remplir pendant la revue)_
+**Décisions prises :** *(à remplir)*
 
 ---
 
-## 🟢 Phase 4 — Stabilisation MVP (H9h15 → H12h15)
+### Phase 4 — Stabilisation MVP (H9h15 → H12h15)
 
-| ID | Tâche | Responsable | Estimation | Statut | Notes |
-|----|-------|-------------|------------|--------|-------|
-| US5-A | Vue : calculer et afficher taux de couverture | Membre 1 | 45 min | ⬜ À faire | nb affectés / capacité |
-| US5-B | Vue : missions incomplètes en évidence | Membre 2 | 1h | ⬜ À faire | Couleur / badge |
-| US5-C | Filtre : missions sous-dotées par zone/statut | Membre 2 | 45 min | ⬜ À faire | |
-| T4-1 | Rédiger README (install, lancement, limites, comptes) | Membre 3 | 45 min | ⬜ À faire | Lancement en < 5 min |
-| T5-1 | Procédure de sauvegarde testée | Membre 3 | 30 min | ⬜ À faire | `dumpdata` Django |
-| T5-2 | Procédure de restauration testée | Membre 3 | 30 min | ⬜ À faire | `loaddata` Django |
-| STB-1 | Corrections bugs identifiés en revue intermédiaire | Tous | 1h | ⬜ À faire | |
-| STB-2 | Vérifier pipeline CI vert sur `main` | Membre 3 | 20 min | ⬜ À faire | |
+- [ ] US5-A — Calculer couverture d'une mission *(Aurélien)*
+- [ ] US5-B — Missions sous-dotées en évidence *(Jonathan)*
+- [ ] US5-C — Filtre missions sous-dotées *(Jonathan)*
+- [ ] T3 — Tests essentiels *(Tous)*
+- [ ] T4 — README + documentation *(Sophian)*
+- [ ] T5 — Sauvegarde et restauration *(Sophian)*
 
 ---
 
-## 🟣 Phase 5 — Recette & préparation (H12h15 → H13h45)
+### 🕐 Daily Scrum #2 (H9h15)
 
-| ID | Tâche | Responsable | Estimation | Statut | Notes |
-|----|-------|-------------|------------|--------|-------|
-| REC-1 | Tests finaux sur le scénario de démo complet | Tous | 45 min | ⬜ À faire | 9 étapes du scénario |
-| REC-2 | Préparer le script de démo (qui montre quoi) | Membre 2 | 30 min | ⬜ À faire | |
-| REC-3 | Vérifier que le seed se charge proprement | Membre 3 | 15 min | ⬜ À faire | `loaddata fixtures/demo.json` |
-| REC-4 | Compléter TRACABILITE_IA.md | Tous | 15 min | ⬜ À faire | |
-| REC-5 | Dernier push + tag de version `v1.0-mvp` | Membre 3 | 10 min | ⬜ À faire | |
+| | Aurélien | Jonathan | Sophian |
+|--|----------|----------|----------|
+| ✅ Fait | | | |
+| 🔜 Prévu | | | |
+| ❗ Blocage | | | |
+
+**Adaptation :** *(à remplir)*
 
 ---
 
-## 🏁 Sprint Review (H13h45 → H14h30)
+### Phase 5 — Recette & préparation (H12h15 → H13h45)
 
-**Scénario de démo à exécuter dans l'ordre :**
+- [ ] Tester le scénario de démo complet de bout en bout
+- [ ] Vérifier seed : 8+ bénévoles, 6+ missions chargés
+- [ ] Pipeline CI vert sur `main`
+- [ ] Compléter `TRACABILITE_IA.md`
+- [ ] Tag de version `v1.0-mvp`
 
-- [ ] 1. Créer 6 missions avec horaires, lieux, capacités et compétences
-- [ ] 2. Créer au moins 8 bénévoles
-- [ ] 3. Déclarer leurs disponibilités
-- [ ] 4. Affecter un bénévole disponible à une mission ✅ nominal
+---
+
+### 🕐 Daily Scrum #3 (H12h15)
+
+| | Aurélien | Jonathan | Sophian |
+|--|----------|----------|----------|
+| ✅ Fait | | | |
+| 🔜 Prévu | | | |
+| ❗ Blocage | | | |
+
+---
+
+### 🏁 Sprint Review (H13h45 → H14h30)
+
+**Scénario de démo :**
+- [ ] 1. Créer 6 missions avec horaires, lieux, capacités, compétences
+- [ ] 2. Créer 8+ bénévoles
+- [ ] 3. Déclarer les disponibilités
+- [ ] 4. Affecter un bénévole disponible ✅ nominal
 - [ ] 5. Tenter une affectation en conflit → refusée ❌ erreur
 - [ ] 6. Afficher le planning d'un bénévole
 - [ ] 7. Afficher la couverture des missions
 - [ ] 8. Montrer les missions incomplètes
-- [ ] 9. Montrer la CI réussie + README + restauration
+- [ ] 9. Montrer CI ✅ + README + restauration
 
-**Retour critique à préparer :**
-- Un choix produit : _(ex. pourquoi affectation manuelle plutôt qu'automatique ?)_
-- Un choix technique : _(ex. pourquoi Django + SQLite ?)_
-- Un usage de l'IA : _(ex. ce que l'IA a généré, ce qu'on a corrigé)_
-
----
-
-## 🔄 Rétrospective (H14h30 → H15h00)
-
-| Continue ✅ | Stop ❌ | Start 🚀 |
-|------------|---------|---------|
-| | | |
-| | | |
-| | | |
-
-**Action d'amélioration concrète :** _(une seule, mesurable)_
+**Retour critique :**
+- Choix produit : *(ex. pourquoi affectation manuelle ?)*
+- Choix technique : *(ex. pourquoi PHP vanilla + MySQL ?)*
+- Usage IA : *(ce que l'IA a généré, ce qu'on a corrigé)*
 
 ---
 
-## 📊 Definition of Done — Checklist finale
+### 🔄 Rétrospective (H14h30 → H15h00)
 
-| Dimension | Condition | ✅ |
-|-----------|-----------|---|
+| ✅ Continue | ❌ Stop | 🚀 Start |
+|------------|--------|---------|
+| | | |
+| | | |
+
+**Action d'amélioration :** *(une seule, concrète et mesurable)*
+
+---
+
+## ✅ Definition of Done — Checklist finale
+
+| Dimension | Condition minimale | Statut |
+|-----------|-------------------|--------|
 | Fonctionnel | Critères d'acceptation MVP démontrables | ⬜ |
 | Code | Versionné, relu, sans secret, erreurs gérées | ⬜ |
-| Qualité | Tests essentiels exécutés avec succès en CI | ⬜ |
+| Qualité | Tests essentiels exécutés avec succès | ⬜ |
 | DevOps | Pipeline reproductible, config externalisée | ⬜ |
-| Données | 8+ bénévoles et 6+ missions en fixtures | ⬜ |
-| Documentation | README : install, lancement, limites, comptes | ⬜ |
+| Données | 8+ bénévoles et 6+ missions en seed | ⬜ |
+| Documentation | README : install, lancement, limites, comptes fictifs | ⬜ |
 | Sécurité | Entrées validées, pas de données sensibles réelles | ⬜ |
 | Produit | PO peut exécuter le parcours sans manipulation cachée | ⬜ |
