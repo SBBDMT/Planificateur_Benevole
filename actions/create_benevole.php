@@ -92,5 +92,5 @@ $log = $pdo->prepare("
 $log->execute([':uid' => $_SESSION['user_id'], ':eid' => $volunteer_id]);
 
 $_SESSION['success'] = "Bénévole \"$name\" créé avec succès.";
-header('Location: ../pages/benevoles.php');
+header('Location: ../pages/creer_benevole.php');
 exit;

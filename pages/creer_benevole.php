@@ -22,7 +22,7 @@ require_once __DIR__ . '/../includes/header.php';
 
     <div class="page-header">
         <h1>Créer un bénévole</h1>
-        <a href="benevoles.php" class="btn btn-secondary">← Retour</a>
+        <a href="mes_missions.php" class="btn btn-secondary">← Retour</a>
     </div>
 
     <?php if ($success) : ?>
