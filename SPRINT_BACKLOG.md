@@ -28,8 +28,8 @@
 | 9 | US3-B | Refuser une affectation en conflit | Conflit horaire détecté et message clair affiché | 3 | US3-A | Aurélien | ✅ | |
 | 10 | US3-C | Refuser si capacité dépassée | Mission pleine : affectation impossible | 2 | US3-A | Aurélien | ✅ | |
 | 11 | US3-D | Tracer affectation et désaffectation | Journal visible ou exploitable dans les logs | 2 | US3-A | Sophian | ✅ | |
-| 12 | US4-A | Afficher le planning d'un bénévole | Missions triées chronologiquement | 2 | US3-A | Jonathan | ⬜ | |
-| 13 | US4-B | Afficher le planning par mission | Liste des bénévoles affectés visible | 2 | US3-A | Jonathan | ⬜ | |
+| 12 | US4-A | Afficher le planning d'un bénévole | Missions triées chronologiquement | 2 | US3-A | Jonathan | ✅ | |
+| 13 | US4-B | Afficher le planning par mission | Liste des bénévoles affectés visible | 2 | US3-A | Jonathan | ✅ | |
 | 14 | US5-A | Calculer la couverture d'une mission | Nombre affecté / capacité affiché | 2 | US3-A | Aurélien | ⬜ | |
 | 15 | US5-B | Identifier les missions sous-dotées | Missions incomplètes mises en évidence | 3 | US5-A | Jonathan | ⬜ | |
 | 16 | US5-C | Filtrer les missions sous-dotées | Filtre opérationnel par zone ou statut | 2 | US5-B | Jonathan | ⬜ | |
