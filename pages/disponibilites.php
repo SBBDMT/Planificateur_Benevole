@@ -1,6 +1,12 @@
 <?php
-require_once '../config/db.php';
-require_once '../includes/header.php';
+
+session_start();
+require_once __DIR__ . '/../config/db.php';
+
+if (!isset($_SESSION['user_id']) || $_SESSION['role_name'] !== 'volunteer') {
+    header('Location: ../login.php');
+    exit;
+}
 
 $userId = $_SESSION['user_id'];
 
@@ -30,55 +36,67 @@ $stmt = $pdo->prepare("
 $stmt->execute([$volunteerId]);
 
 $disponibilites = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+require_once __DIR__ . '/../includes/header.php';
 ?>
 
-<h2>Mes disponibilités</h2>
+<div class="container">
 
-<form action="../actions/save_disponibilite.php" method="POST">
+    <div class="page-header">
+        <h1>Mes disponibilités</h1>
+    </div>
 
-    <label>Début</label><br>
-    <input type="datetime-local" name="starts_at" required><br><br>
+    <form action="../actions/save_disponibilite.php" method="POST" class="form-card">
 
-    <label>Fin</label><br>
-    <input type="datetime-local" name="ends_at" required><br><br>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="starts_at">Début <span class="required">*</span></label>
+                <input id="starts_at" type="datetime-local" name="starts_at" required>
+            </div>
 
-    <button type="submit">
-        Enregistrer
-    </button>
+            <div class="form-group">
+                <label for="ends_at">Fin <span class="required">*</span></label>
+                <input id="ends_at" type="datetime-local" name="ends_at" required>
+            </div>
+        </div>
 
-</form>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Enregistrer</button>
+        </div>
 
-<hr>
+    </form>
 
-<h3>Disponibilités enregistrées</h3>
+    <section class="dashboard-section">
+        <div class="section-header">
+            <h2>Disponibilités enregistrées</h2>
+        </div>
 
-<?php if(empty($disponibilites)): ?>
+        <?php if (empty($disponibilites)) : ?>
 
-    <p>Aucune disponibilité enregistrée.</p>
+            <p class="empty-state">Aucune disponibilité enregistrée.</p>
 
-<?php else: ?>
+        <?php else : ?>
 
-<table border="1" cellpadding="8">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Début</th>
+                        <th>Fin</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($disponibilites as $disponibilite) : ?>
+                        <tr>
+                            <td><?= date('d/m/Y H:i', strtotime($disponibilite['starts_at'])) ?></td>
+                            <td><?= date('d/m/Y H:i', strtotime($disponibilite['ends_at'])) ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
 
-<tr>
-    <th>Début</th>
-    <th>Fin</th>
-</tr>
+        <?php endif; ?>
+    </section>
 
-<?php foreach($disponibilites as $d): ?>
+</div>
 
-<tr>
-
-<td><?= date('d/m/Y H:i', strtotime($d['starts_at'])) ?></td>
-
-<td><?= date('d/m/Y H:i', strtotime($d['ends_at'])) ?></td>
-
-</tr>
-
-<?php endforeach; ?>
-
-</table>
-
-<?php endif; ?>
-
-<?php require_once '../includes/footer.php'; ?>
+<?php require_once __DIR__ . '/../includes/footer.php'; ?>
