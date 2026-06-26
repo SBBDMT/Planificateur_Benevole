@@ -19,8 +19,8 @@
 |---|-----|-------|------------------------|-----|---------|-------------|--------|-------|
 | 1 | T0 | Initialiser dépôt, conventions, CI minimale | Repo créé, pipeline lancé, structure projet disponible | 2 | — | Sophian | ⬜ | |
 | 2 | T1 | Créer le modèle de données minimal | Tables missions, bénévoles, disponibilités, affectations créées | 3 | T0 | Aurélien | ✅ | `schema.sql` généré |
-| 3 | US1-A | Créer une mission simple | Titre, lieu, début, fin, capacité enregistrés | 2 | T1 | Aurélien | ⬜ | |
-| 4 | US1-B | Ajouter compétence éventuelle à une mission | Compétence facultative enregistrée et validée | 1 | US1-A | Aurélien | ⬜ | |
+| 3 | US1-A | Créer une mission simple | Titre, lieu, début, fin, capacité enregistrés | 2 | T1 | Aurélien | ✅ | |
+| 4 | US1-B | Ajouter compétence éventuelle à une mission | Compétence facultative enregistrée et validée | 1 | US1-A | Aurélien | ✅ | |
 | 5 | US2-A | Créer un bénévole | Nom, contact et profil créés | 1 | T1 | Aurélien | ⬜ | |
 | 6 | US2-B | Renseigner les disponibilités | Créneaux enregistrés pour un bénévole | 2 | US2-A | Jonathan | ⬜ | |
 | 7 | US2-C | Empêcher les disponibilités incohérentes | Fin > début ; chevauchements détectés | 2 | US2-B | Aurélien | ⬜ | |
