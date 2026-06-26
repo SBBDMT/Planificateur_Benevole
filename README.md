@@ -79,3 +79,8 @@ Cela garantit que le projet est relançable, testable et reproductible.
 ![CI/CD](https://github.com/SBBDMT/Planificateur_Benevole/actions/workflows/ci.yml/badge.svg)
 
 [Voir le workflow CI/CD](https://github.com/SBBDMT/Planificateur_Benevole/actions/workflows/ci.yml)
+
+## Base de données
+
+Un jeu de données factices est disponible dans sql/demo.sql
+Le squelette de la BD est disponible dans sql/schema.sql
