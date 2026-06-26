@@ -59,6 +59,8 @@ EOF
 "$DUMP_BIN" \
     --defaults-extra-file="$CLIENT_CNF" \
     --single-transaction \
+    --skip-lock-tables \
+    --skip-add-locks \
     --skip-events \
     --add-drop-table \
     --set-charset \
