@@ -29,6 +29,7 @@ $name = $_SESSION['user_name'] ?? '';
         <?php elseif ($role === 'coordinator') : ?>
             <li><a href="../pages/mes_missions.php">Mes missions</a></li>
             <li><a href="../pages/mes_affectations.php">Mes affectations</a></li>
+            <li><a href="../pages/creer_benevole.php">Créer un bénévole</a></li>
 
         <?php elseif ($role === 'manager') : ?>
             <li><a href="../pages/dashboard.php">Tableau de bord</a></li>
