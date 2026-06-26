@@ -64,19 +64,19 @@ $log->execute([':uid' => $user['id'], ':uid2' => $user['id']]);
 // --- Redirection selon le rôle ---
 switch ($user['role_name']) {
     case 'coordinator':
-        header('Location: pages/mes_missions.php');
+        header('Location: ../pages/mes_missions.php');
         break;
     case 'volunteer':
-        header('Location: pages/planning.php');
+        header('Location: ../pages/planning.php');
         break;
     case 'manager':
-        header('Location: pages/dashboard.php');
+        header('Location: ../pages/dashboard.php');
         break;
     case 'admin':
-        header('Location: pages/dashboard.php');
+        header('Location: ../pages/dashboard.php');
         break;
     default:
-        header('Location: index.php');
+        header('Location: ../index.php');
         break;
 }
 exit;

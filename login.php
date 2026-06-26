@@ -8,53 +8,63 @@ $old = $_SESSION['old_data'] ?? [];
 unset($_SESSION['errors']);
 unset($_SESSION['old_data']);
 
-require_once 'includes/header.php';
-
 ?>
 
-<main class="login-container">
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion - Planificateur de bénévoles</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="login-page">
 
-    <div class="login-box">
-
-        <h2>Connexion</h2>
-
-        <?php foreach($errors as $error): ?>
-
-            <div class="error">
-
-                <?= htmlspecialchars($error) ?>
-
+    <main class="login-container">
+        <section class="login-box" aria-labelledby="login-title">
+            <div class="login-header">
+                <p class="login-kicker">Planificateur de bénévoles</p>
+                <h1 id="login-title">Connexion</h1>
             </div>
 
-        <?php endforeach; ?>
+            <?php if (!empty($errors)) : ?>
+                <div class="alert alert-error">
+                    <ul>
+                        <?php foreach ($errors as $error) : ?>
+                            <li><?= htmlspecialchars($error) ?></li>
+                        <?php endforeach; ?>
+                    </ul>
+                </div>
+            <?php endif; ?>
 
-        <form action="actions/login.php" method="POST">
+            <form action="actions/login.php" method="POST" class="login-form">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input
+                        id="email"
+                        type="email"
+                        name="email"
+                        value="<?= htmlspecialchars($old['email'] ?? '') ?>"
+                        autocomplete="email"
+                        required>
+                </div>
 
-            <label>Email</label>
+                <div class="form-group">
+                    <label for="password">Mot de passe</label>
+                    <input
+                        id="password"
+                        type="password"
+                        name="password"
+                        autocomplete="current-password"
+                        required>
+                </div>
 
-            <input
-                type="email"
-                name="email"
-                value="<?= htmlspecialchars($old['email'] ?? '') ?>"
-                required>
+                <button type="submit" class="btn btn-primary login-submit">
+                    Se connecter
+                </button>
+            </form>
+        </section>
+    </main>
 
-            <label>Mot de passe</label>
-
-            <input
-                type="password"
-                name="password"
-                required>
-
-            <button type="submit">
-                Se connecter
-            </button>
-
-        </form>
-
-    </div>
-
-</main>
-
-<?php
-require_once 'includes/footer.php';
-?>
+</body>
+</html>

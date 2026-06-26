@@ -1,7 +1,29 @@
 <?php
 
-// Chargement du .env
-$env = parse_ini_file(__DIR__ . '/../.env');
+function loadEnv(string $path): array
+{
+    if (!is_file($path)) {
+        return [];
+    }
+
+    $env = [];
+    $lines = file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+
+    foreach ($lines as $line) {
+        $line = trim($line);
+
+        if ($line === '' || str_starts_with($line, '#') || str_starts_with($line, ';')) {
+            continue;
+        }
+
+        [$key, $value] = array_pad(explode('=', $line, 2), 2, '');
+        $env[trim($key)] = trim($value, " \t\n\r\0\x0B\"'");
+    }
+
+    return $env;
+}
+
+$env = loadEnv(__DIR__ . '/../.env');
 
 $host = $env['DB_HOST']     ?? 'localhost';
 $port = $env['DB_PORT']     ?? '3306';
