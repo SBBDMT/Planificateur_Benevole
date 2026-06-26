@@ -53,3 +53,29 @@ planificateur-benevoles/
 ├── .env                               # ⛔ dans .gitignore
 └── .gitignore
 ```
+
+## CI/CD
+
+Le projet utilise GitHub Actions pour vérifier automatiquement la qualité technique.
+
+À chaque push ou pull request, le pipeline :
+
+1. récupère le code ;
+2. installe PHP 8.2 avec l’extension `pdo_mysql` ;
+3. vérifie que le fichier `.env` n’est pas versionné ;
+4. génère un `.env` de test ;
+5. vérifie la structure attendue du projet ;
+6. vérifie la syntaxe de tous les fichiers PHP ;
+7. lance une base MariaDB de test ;
+8. importe `sql/schema.sql` ;
+9. importe `sql/demo.sql` si le fichier existe ;
+10. démarre le serveur PHP ;
+11. vérifie que `login.php` répond correctement.
+
+Cela garantit que le projet est relançable, testable et reproductible.
+
+### Statut CI/CD
+
+![CI/CD](https://github.com/SBBDMT/Planificateur_Benevole/actions/workflows/ci.yml/badge.svg)
+
+[Voir le workflow CI/CD](https://github.com/SBBDMT/Planificateur_Benevole/actions/workflows/ci.yml)

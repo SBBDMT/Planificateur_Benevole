@@ -1,0 +1,134 @@
+name: CI/CD - Planificateur bénévoles PHP
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    name: Vérifications PHP / SQL / structure
+    runs-on: ubuntu-latest
+
+    services:
+      mariadb:
+        image: mariadb:11
+        env:
+          MARIADB_ROOT_PASSWORD: root
+          MARIADB_DATABASE: planificateur_benevoles_test
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mariadb-admin ping -h 127.0.0.1 -uroot -proot"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+
+    steps:
+      - name: Récupérer le code
+        uses: actions/checkout@v4
+
+      - name: Installer PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: pdo_mysql
+          coverage: none
+
+      - name: Vérifier la version PHP
+        run: php -v
+
+      - name: Vérifier que .env n'est pas versionné
+        run: |
+          if git ls-files --error-unmatch .env 2>/dev/null; then
+            echo "Erreur : le fichier .env ne doit pas être versionné."
+            exit 1
+          else
+            echo "OK : .env n'est pas versionné."
+          fi
+
+      - name: Créer un .env de test
+        run: |
+          printf "%s\n" \
+            "APP_ENV=test" \
+            "DB_HOST=127.0.0.1" \
+            "DB_PORT=3306" \
+            "DB_NAME=planificateur_benevoles_test" \
+            "DB_USER=root" \
+            "DB_PASS=root" \
+            > .env
+
+      - name: Vérifier la structure du projet
+        run: |
+          test -f index.php
+          test -f login.php
+          test -f logout.php
+          test -f config/db.php
+          test -f includes/header.php
+          test -f includes/footer.php
+          test -f includes/functions.php
+          test -f pages/planning.php
+          test -f pages/disponibilites.php
+          test -f pages/mes_missions.php
+          test -f pages/creer_mission.php
+          test -f pages/mes_affectations.php
+          test -f pages/affecter.php
+          test -f pages/dashboard.php
+          test -f pages/toutes_missions.php
+          test -f pages/toutes_affectations.php
+          test -f actions/login.php
+          test -f actions/create_mission.php
+          test -f actions/create_benevole.php
+          test -f actions/save_disponibilite.php
+          test -f actions/affecter.php
+          test -f actions/desaffecter.php
+          test -f css/style.css
+          test -f sql/schema.sql
+          test -f sql/demo.sql
+          test -f .env.example
+          test -f .gitignore
+
+      - name: Vérifier la syntaxe PHP
+        run: |
+          find . -type f -name "*.php" -not -path "./vendor/*" -print0 | xargs -0 -n1 php -l
+
+      - name: Installer le client MariaDB
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y mariadb-client
+
+      - name: Tester le schéma SQL
+        run: |
+          mariadb --protocol=tcp \
+            -h127.0.0.1 \
+            -P3306 \
+            -uroot \
+            -proot \
+            planificateur_benevoles_test < sql/schema.sql
+
+      - name: Charger les données de démonstration si présentes
+        run: |
+          if [ -f sql/demo.sql ]; then
+            mariadb --protocol=tcp \
+              -h127.0.0.1 \
+              -P3306 \
+              -uroot \
+              -proot \
+              planificateur_benevoles_test < sql/demo.sql
+          else
+            echo "sql/demo.sql pas encore présent, étape ignorée."
+          fi
+
+      - name: Démarrer le serveur PHP
+        run: |
+          php -S 127.0.0.1:8000 -t . > server.log 2>&1 &
+          sleep 2
+
+      - name: Vérifier que login.php répond
+        run: |
+          curl --fail --silent --show-error http://127.0.0.1:8000/login.php > /dev/null || \
+          (cat server.log && exit 1)
