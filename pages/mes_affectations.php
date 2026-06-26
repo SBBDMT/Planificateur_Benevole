@@ -14,7 +14,7 @@ unset($_SESSION['errors'], $_SESSION['success']);
 
 $mission_id = (int) ($_GET['mission_id'] ?? 0);
 
-// Récupération de la mission (uniquement si elle appartient au coordinateur)
+// Récupération de la mission du coordinateur
 $mission = null;
 if ($mission_id > 0) {
     $stmt = $pdo->prepare("
@@ -29,16 +29,16 @@ if ($mission_id > 0) {
     $mission = $stmt->fetch();
 }
 
-// Récupération des bénévoles actifs pour le select
+// Bénévoles actifs pour le select
 $benevoles = $pdo->query("
-    SELECT v.id, u.name, u.email, u.phone
+    SELECT v.id, u.name, u.email
     FROM volunteer v
     INNER JOIN user u ON u.id = v.user_id
     WHERE v.active = 1
     ORDER BY u.name ASC
 ")->fetchAll();
 
-// Récupération des affectations de cette mission
+// Affectations de la mission
 $affectations = [];
 if ($mission_id > 0) {
     $stmt = $pdo->prepare("
@@ -61,7 +61,10 @@ require_once __DIR__ . '/../includes/header.php';
 
     <div class="page-header">
         <h1>Affectations<?= $mission ? ' — ' . htmlspecialchars($mission['title']) : '' ?></h1>
-        <a href="mes_missions.php" class="btn btn-secondary">← Retour aux missions</a>
+        <div style="display:flex;gap:10px">
+            <a href="audit_log.php" class="btn btn-secondary">📋 Journal</a>
+            <a href="mes_missions.php" class="btn btn-secondary">← Retour</a>
+        </div>
     </div>
 
     <?php if ($success) : ?>
@@ -105,9 +108,7 @@ require_once __DIR__ . '/../includes/header.php';
         <?php if ($mission['nb_assigned'] < $mission['required_capacity']) : ?>
             <form action="../actions/affecter.php" method="POST" class="form-card" style="margin-bottom:24px">
                 <h2 style="font-size:16px;margin-bottom:14px;color:#2c3e6b">Affecter un bénévole</h2>
-
                 <input type="hidden" name="mission_id" value="<?= $mission['id'] ?>">
-
                 <div class="form-group">
                     <label for="volunteer_id">Bénévole <span class="required">*</span></label>
                     <select id="volunteer_id" name="volunteer_id" required>
@@ -119,7 +120,6 @@ require_once __DIR__ . '/../includes/header.php';
                         <?php endforeach; ?>
                     </select>
                 </div>
-
                 <div class="form-actions">
                     <button type="submit" class="btn btn-primary">Affecter</button>
                 </div>
@@ -141,6 +141,7 @@ require_once __DIR__ . '/../includes/header.php';
                         <th>Email</th>
                         <th>Statut</th>
                         <th>Affecté le</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -150,6 +151,20 @@ require_once __DIR__ . '/../includes/header.php';
                             <td><?= htmlspecialchars($a['benevole_email']) ?></td>
                             <td><span class="badge badge-<?= $a['status'] ?>"><?= $a['status'] ?></span></td>
                             <td><?= date('d/m/Y H:i', strtotime($a['created_at'])) ?></td>
+                            <td>
+                                <?php if ($a['status'] === 'confirmed') : ?>
+                                    <form action="../actions/desaffecter.php" method="POST" style="display:inline"
+                                          onsubmit="return confirm('Désaffecter ce bénévole ?')">
+                                        <input type="hidden" name="assignment_id" value="<?= $a['id'] ?>">
+                                        <input type="hidden" name="mission_id" value="<?= $mission_id ?>">
+                                        <button type="submit" class="btn btn-sm" style="background:#f8d7da;color:#721c24">
+                                            Désaffecter
+                                        </button>
+                                    </form>
+                                <?php else : ?>
+                                    —
+                                <?php endif; ?>
+                            </td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>

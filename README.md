@@ -28,6 +28,7 @@ planificateur-benevoles/
 │   ├── creer_mission.php              # Formulaire création mission
 │   ├── mes_affectations.php           # Ses affectations uniquement
 │   ├── affecter.php                   # Formulaire affectation bénévole
+    |── audit_log.php                  # Logs de missions du coordinateur
 │   │
 │   └── — RESPONSABLE —
 │       ├── dashboard.php              # Vue globale + missions sous-dotées
