@@ -16,6 +16,7 @@ Homestead.json
 Homestead.yaml
 composer.phar
 *.log
+/sauvegardes/backups/
 
 # Linux
 *~

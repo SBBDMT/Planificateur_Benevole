@@ -36,7 +36,7 @@
 | 17 | T2 | Jeu de données de démonstration | Au moins 8 bénévoles et 6 missions | 2 | T1 | Sophian | ✅ | |
 | 18 | T3 | Tests essentiels | Tests affectation, conflit, capacité, disponibilité | 3 | US3, US5 | Tous | ⬜ | |
 | 19 | T4 | Documentation d'exploitation | README, lancement, limites connues, comptes fictifs | 2 | T0 | Sophian | ⬜ | |
-| 20 | T5 | Sauvegarde et restauration | Procédure testée avant revue | 2 | T1 | Sophian | ⬜ | |
+| 20 | T5 | Sauvegarde et restauration | Procédure testée avant revue | 2 | T1 | Sophian | ✅ | |
 
 ---
 
