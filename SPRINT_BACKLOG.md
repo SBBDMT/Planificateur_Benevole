@@ -26,7 +26,7 @@
 | 7 | US2-C | Empêcher les disponibilités incohérentes | Fin > début ; chevauchements détectés | 2 | US2-B | Aurélien | ✅ | |
 | 8 | US3-A | Affecter un bénévole à une mission | Affectation créée si disponibilité suffisante | 3 | US1, US2 | Aurélien | ✅ | |
 | 9 | US3-B | Refuser une affectation en conflit | Conflit horaire détecté et message clair affiché | 3 | US3-A | Aurélien | ✅ | |
-| 10 | US3-C | Refuser si capacité dépassée | Mission pleine : affectation impossible | 2 | US3-A | Aurélien | ⬜ | |
+| 10 | US3-C | Refuser si capacité dépassée | Mission pleine : affectation impossible | 2 | US3-A | Aurélien | ✅ | |
 | 11 | US3-D | Tracer affectation et désaffectation | Journal visible ou exploitable dans les logs | 2 | US3-A | Sophian | ⬜ | |
 | 12 | US4-A | Afficher le planning d'un bénévole | Missions triées chronologiquement | 2 | US3-A | Jonathan | ⬜ | |
 | 13 | US4-B | Afficher le planning par mission | Liste des bénévoles affectés visible | 2 | US3-A | Jonathan | ⬜ | |
